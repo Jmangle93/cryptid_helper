@@ -13,7 +13,7 @@ grid_bounds = {
 }
 
 tile_colors = {
-    'd': 'ffb600',
+    'd': '#ffb600',
     'f': '#39b448',
     'm': '#cccccc',
     's': '#351c75',
@@ -21,9 +21,29 @@ tile_colors = {
 }
 
 # note the tile layers will be inverted, vertically
-tile_list = [['m', 'm', 'm', 'm', 'w', 'w'],
-             ['s', 's', 'f', 'm', 'w', 'w'],
-             ['s', 's', 'f', 'f', 'f', 'w']]
+tile_list_1 =  [['s', 's', 'd', 'd', 'd', 'f'],
+                ['s', 's', 'w', 'd', 'f', 'f'],
+                ['w', 'w', 'w', 'w', 'f', 'f']]
+
+tile_list_2 =  [['s', 'm', 'm', 'm', 'm', 'd'],
+                ['s', 's', 'f', 'd', 'd', 'd'],
+                ['s', 'f', 'f', 'f', 'f', 'f']]
+
+tile_list_3 =  [['m', 'm', 'm', 'm', 'w', 'w'],
+                ['s', 's', 'f', 'm', 'w', 'w'],
+                ['s', 's', 'f', 'f', 'f', 'w']]
+
+tile_list_4 =  [['d', 'd', 'd', 'f', 'f', 'f'],
+                ['d', 'd', 'm', 'w', 'w', 'w'],
+                ['d', 'd', 'm', 'm', 'm', 'm']]
+
+tile_list_5 =  [['d', 'd', 'w', 'w', 'w', 'w'],
+                ['s', 'd', 'd', 'w', 'm', 'm'],
+                ['s', 's', 's', 'm', 'm', 'm']]
+
+tile_list_6 =  [['m', 'w', 'w', 'w', 'w', 'f'],
+                ['m', 'm', 's', 's', 'f', 'f'],
+                ['d', 'd', 's', 's', 's', 'f']]
 
 # Given the index vector x = (x_target - x), y = (y_target - y),
 # move the turtle for drawing next hex there.
@@ -78,7 +98,7 @@ def draw_grid(grid_bounds, tiles):
             move_along_vector(1, y_move, hex_radius)
         move_along_vector(-grid_extents[0] -1, 2, hex_radius)
 
-draw_grid(grid_bounds, tile_list)
+draw_grid(grid_bounds, tile_list_1)
 
 turtle.update()
 turtle.done()
