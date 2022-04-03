@@ -83,22 +83,32 @@ def draw_hex(radius, orientation, fill_color):
     t.setheading(0)
 
 # # left to right, bottom to top
-def draw_grid(grid_bounds, tiles):
+def draw_grid(grid_bounds, tiles, flip=False):
     grid_start = (grid_bounds['x'][0],grid_bounds['y'][0])
     grid_extents = (grid_bounds['x'][1] - grid_bounds['x'][0], grid_bounds['y'][1] - grid_bounds['y'][0])
     print(f'grid extents: {grid_extents}')
 
     move_along_vector(grid_start[0], grid_start[1], hex_radius)
-    for i in range(grid_extents[1] + 1):
-        for j in range(grid_extents[0] + 1):
-            tile = tiles[i][j]
-            color = tile_colors[tile]
-            draw_hex(hex_radius, orientation, color)
-            y_move = 1 if j % 2 else -1
-            move_along_vector(1, y_move, hex_radius)
-        move_along_vector(-grid_extents[0] -1, 2, hex_radius)
+    if not flip:
+        for i in range(grid_extents[1] + 1):
+            for j in range(grid_extents[0] + 1):
+                tile = tiles[i][j]
+                color = tile_colors[tile]
+                draw_hex(hex_radius, orientation, color)
+                y_move = 1 if j % 2 else -1
+                move_along_vector(1, y_move, hex_radius)
+            move_along_vector(-grid_extents[0] -1, 2, hex_radius)
+    else:
+        for i in range(grid_extents[1], -1, -1):
+            for j in range(grid_extents[0], -1, -1):
+                tile = tiles[i][j]
+                color = tile_colors[tile]
+                draw_hex(hex_radius, orientation, color)
+                y_move = -1 if j % 2 else 1
+                move_along_vector(1, y_move, hex_radius)
+            move_along_vector(-grid_extents[0] -1, 2, hex_radius)
 
-draw_grid(grid_bounds, tile_list_1)
+draw_grid(grid_bounds, tile_list_6, True)
 
 turtle.update()
 turtle.done()
