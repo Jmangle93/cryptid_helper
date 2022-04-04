@@ -6,13 +6,8 @@ orientation = 330
 hex_radius = 24
 t.speed(0)
 
-# define the 'coordinate system', inclusive
-grid_bounds = {
-    'x': (-3, 2),
-    'y': (0, 2)
-}
 
-tile_colors = {
+tile_topo_colors = {
     'd': '#ffb600',
     'f': '#39b448',
     'm': '#cccccc',
@@ -20,30 +15,58 @@ tile_colors = {
     'w': '#4f86f7'
 }
 
+tile_territory_colors = {
+    'b': '#000000',
+    'l': '#cc0000'
+}
+
 # note the tile layers will be inverted, vertically
-tile_list_1 =  [['s', 's', 'd', 'd', 'd', 'f'],
-                ['s', 's', 'w', 'd', 'f', 'f'],
-                ['w', 'w', 'w', 'w', 'f', 'f']]
+tile_topo_1 =          [['s', 's', 'd', 'd', 'd', 'f'],
+                        ['s', 's', 'w', 'd', 'f', 'f'],
+                        ['w', 'w', 'w', 'w', 'f', 'f']]
+tile_territories_1 =   [[' ', ' ', ' ', 'b', 'b', 'b'],
+                        [' ', ' ', ' ', ' ', ' ', ' '],
+                        [' ', ' ', ' ', ' ', ' ', ' ']]
 
-tile_list_2 =  [['s', 'm', 'm', 'm', 'm', 'd'],
-                ['s', 's', 'f', 'd', 'd', 'd'],
-                ['s', 'f', 'f', 'f', 'f', 'f']]
 
-tile_list_3 =  [['m', 'm', 'm', 'm', 'w', 'w'],
-                ['s', 's', 'f', 'm', 'w', 'w'],
-                ['s', 's', 'f', 'f', 'f', 'w']]
+tile_topo_2 =          [['s', 'm', 'm', 'm', 'm', 'd'],
+                        ['s', 's', 'f', 'd', 'd', 'd'],
+                        ['s', 'f', 'f', 'f', 'f', 'f']]
+tile_territories_2 =   [[' ', ' ', ' ', ' ', ' ', ' '],
+                        [' ', ' ', ' ', ' ', ' ', ' '],
+                        ['l', 'l', 'l', ' ', ' ', ' ']]
 
-tile_list_4 =  [['d', 'd', 'd', 'f', 'f', 'f'],
-                ['d', 'd', 'm', 'w', 'w', 'w'],
-                ['d', 'd', 'm', 'm', 'm', 'm']]
+tile_topo_3 =          [['m', 'm', 'm', 'm', 'w', 'w'],
+                        ['s', 's', 'f', 'm', 'w', 'w'],
+                        ['s', 's', 'f', 'f', 'f', 'w']]
+tile_territories_3 =   [['l', ' ', ' ', ' ', ' ', ' '],
+                        ['l', 'l', ' ', ' ', ' ', ' '],
+                        [' ', ' ', ' ', ' ', ' ', ' ']]
 
-tile_list_5 =  [['d', 'd', 'w', 'w', 'w', 'w'],
-                ['s', 'd', 'd', 'w', 'm', 'm'],
-                ['s', 's', 's', 'm', 'm', 'm']]
+tile_topo_4 =          [['d', 'd', 'd', 'f', 'f', 'f'],
+                        ['d', 'd', 'm', 'w', 'w', 'w'],
+                        ['d', 'd', 'm', 'm', 'm', 'm']]
+tile_territories_4 =   [[' ', ' ', ' ', ' ', ' ', 'l'],
+                        [' ', ' ', ' ', ' ', ' ', 'l'],
+                        [' ', ' ', ' ', ' ', ' ', ' ']]
 
-tile_list_6 =  [['m', 'w', 'w', 'w', 'w', 'f'],
-                ['m', 'm', 's', 's', 'f', 'f'],
-                ['d', 'd', 's', 's', 's', 'f']]
+tile_topo_5 =          [['d', 'd', 'w', 'w', 'w', 'w'],
+                        ['s', 'd', 'd', 'w', 'm', 'm'],
+                        ['s', 's', 's', 'm', 'm', 'm']]
+tile_territories_5 =   [[' ', ' ', ' ', ' ', 'b', 'b'],
+                        [' ', ' ', ' ', ' ', ' ', 'b'],
+                        [' ', ' ', ' ', ' ', ' ', ' ']]
+
+tile_topo_6 =          [['m', 'w', 'w', 'w', 'w', 'f'],
+                        ['m', 'm', 's', 's', 'f', 'f'],
+                        ['d', 'd', 's', 's', 's', 'f']]
+tile_territories_6 =   [[' ', ' ', ' ', ' ', ' ', ' '],
+                        ['b', ' ', ' ', ' ', ' ', ' '],
+                        ['b', ' ', ' ', ' ', ' ', ' ']]
+
+tiles = [(tile_topo_1, tile_territories_1),(tile_topo_2, tile_territories_2),
+         (tile_topo_3, tile_territories_3),(tile_topo_4, tile_territories_4),
+         (tile_topo_5, tile_territories_5),(tile_topo_6, tile_territories_6)]
 
 # Given the index vector x = (x_target - x), y = (y_target - y),
 # move the turtle for drawing next hex there.
@@ -82,33 +105,73 @@ def draw_hex(radius, orientation, fill_color):
     t.end_fill()
     t.setheading(0)
 
-# # left to right, bottom to top
-def draw_grid(grid_bounds, tiles, flip=False):
-    grid_start = (grid_bounds['x'][0],grid_bounds['y'][0])
-    grid_extents = (grid_bounds['x'][1] - grid_bounds['x'][0], grid_bounds['y'][1] - grid_bounds['y'][0])
-    print(f'grid extents: {grid_extents}')
+def draw_territory(radius, orientation, color):
+    start_size = t.pensize()
+    start_color = t.pencolor()
+    t.penup()
+    t.pensize(5)
+    t.pencolor(color)
 
-    move_along_vector(grid_start[0], grid_start[1], hex_radius)
-    if not flip:
-        for i in range(grid_extents[1] + 1):
-            for j in range(grid_extents[0] + 1):
-                tile = tiles[i][j]
-                color = tile_colors[tile]
-                draw_hex(hex_radius, orientation, color)
-                y_move = 1 if j % 2 else -1
-                move_along_vector(1, y_move, hex_radius)
-            move_along_vector(-grid_extents[0] -1, 2, hex_radius)
-    else:
-        for i in range(grid_extents[1], -1, -1):
-            for j in range(grid_extents[0], -1, -1):
-                tile = tiles[i][j]
-                color = tile_colors[tile]
-                draw_hex(hex_radius, orientation, color)
+    t.setheading(0)
+    t.pendown()
+    t.setheading(orientation)
+    t.circle(radius, steps=6)
+    t.setheading(0)
+    t.penup()
+
+    t.setheading(0)
+
+    t.pensize(start_size)
+    t.pencolor(start_color)
+
+def draw_piece_territories(territories, flip):
+    y_range = range(2, -1, -1) if flip else range(3)
+    x_range = range(5, -1, -1) if flip else range(6)
+    for i in y_range:
+        for j in x_range:
+            territory = tile_territory_colors.get(territories[i][j])
+            if territory:
+                draw_territory(hex_radius, orientation, territory)
+            if flip:
                 y_move = -1 if j % 2 else 1
-                move_along_vector(1, y_move, hex_radius)
-            move_along_vector(-grid_extents[0] -1, 2, hex_radius)
+            else:
+                y_move = 1 if j % 2 else -1
+            move_along_vector(1, y_move, hex_radius)
+        move_along_vector(-6, 2, hex_radius)
 
-draw_grid(grid_bounds, tile_list_6, True)
+# left to right, bottom to top
+def draw_board_piece(grid_start, topos, territories, flip=False):
+    move_along_vector(grid_start[0], grid_start[1], hex_radius)
+    y_range = range(2, -1, -1) if flip else range(3)
+    x_range = range(5, -1, -1) if flip else range(6)
+    for i in y_range:
+        for j in x_range:
+            tile = topos[i][j]
+            topo_color = tile_topo_colors[tile]
+            draw_hex(hex_radius, orientation, topo_color)
+            if flip:
+                y_move = -1 if j % 2 else 1
+            else:
+                y_move = 1 if j % 2 else -1
+            move_along_vector(1, y_move, hex_radius)
+        move_along_vector(-6, 2, hex_radius)
+    move_along_vector(0, -4, hex_radius)
+    draw_piece_territories(territories, flip)
+    move_along_vector(0, -4, hex_radius)
+
+
+def draw_board(piece_order):
+    draw_board_piece([-6,0], tiles[abs(piece_order[0])-1][0], tiles[abs(piece_order[0])-1][1], piece_order[0] < 0)
+    draw_board_piece([0,-4], tiles[abs(piece_order[1])-1][0], tiles[abs(piece_order[1])-1][1], piece_order[1] < 0)
+    draw_board_piece([0,-4], tiles[abs(piece_order[2])-1][0], tiles[abs(piece_order[2])-1][1], piece_order[2] < 0)
+    draw_board_piece([6, 7], tiles[abs(piece_order[3])-1][0], tiles[abs(piece_order[3])-1][1], piece_order[3] < 0)
+    draw_board_piece([0,-4], tiles[abs(piece_order[4])-1][0], tiles[abs(piece_order[4])-1][1], piece_order[4] < 0)
+    draw_board_piece([0,-4], tiles[abs(piece_order[5])-1][0], tiles[abs(piece_order[5])-1][1], piece_order[5]< 0)
+
+
+
+card = [1, 6, 4, 2, 5, -3]
+draw_board(card)
 
 turtle.update()
 turtle.done()
